@@ -1,0 +1,13 @@
+Implement the module `mac_rne_sat` in sources/mac_rne_sat.sv according to
+docs/spec.md.
+
+Requirements:
+- Synthesizable SystemVerilog, compatible with Icarus Verilog (-g2012).
+- No SystemVerilog Assertions (SVA).
+- Keep the module name, port names, directions, and widths exactly as in
+  the provided skeleton.
+- You may write and run your own tests, but grading is performed by a
+  hidden testbench that checks cycle-exact behavior against docs/spec.md.
+
+Deliverable: the completed sources/mac_rne_sat.sv. Do not modify any other
+file.
