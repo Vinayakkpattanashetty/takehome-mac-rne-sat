@@ -1,8 +1,7 @@
 `timescale 1ns/1ps
 //
-// mac_rne_sat -- implement per doc/spec.md.
-// Do not change the module name, port list, or port directions.
-// Synthesizable SystemVerilog only (Icarus Verilog, -g2012). No SVA.
+// mac_rne_sat -- implement your golden solution in this file per
+// docs/spec.md, and push it to your fork's mac_rne_sat_golden branch.
 //
 module mac_rne_sat (
     input  logic               clk,
@@ -16,12 +15,5 @@ module mac_rne_sat (
     output logic               res_valid, // 1-cycle pulse, one cycle after rd
     output logic               ovf        // sticky saturation flag
 );
-
-    // TODO: implement the accumulate / readout / overflow logic per
-    // doc/spec.md. The tie-offs below only keep the skeleton compiling;
-    // replace them with your implementation.
-    assign res       = '0;
-    assign res_valid = 1'b0;
-    assign ovf       = 1'b0;
 
 endmodule
