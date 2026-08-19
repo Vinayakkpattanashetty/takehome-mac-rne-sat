@@ -56,13 +56,10 @@ the end of cycle *t−1* — that is, **before** any accumulator update
 snapshot. A `clr` asserted in the same cycle as `rd` clears the accumulator
 **after** the snapshot is taken (the readout returns the pre-clear value).
 
-**Rounding — round-half-to-even at the 8 LSBs.** Let
-`q = floor(snapshot / 256)` and `r = snapshot − 256·q`, so that
-`0 ≤ r ≤ 255` — including for negative snapshots. The rounded value is:
-
-- `q` if `r < 128`;
-- `q + 1` if `r > 128`;
-- on a tie (`r == 128`): `q` if `q` is even, else `q + 1`.
+**Rounding — round-half-to-even at the 8 LSBs.** 
+Scale the snapshot down by a factor of 256. Round to the nearest whole number. 
+If the fractional part is exactly halfway between two integers, round to the nearest EVEN integer.
+Ensure this behaves correctly for both positive and negative values in two's complement.
 
 **Saturation — applied after rounding.** The rounded value is then clamped
 to the signed 16-bit range `[−32768, +32767]`. Note the order: rounding is
@@ -77,11 +74,11 @@ Back-to-back `rd` cycles are permitted and each takes its own snapshot.
 
 Worked examples (`snapshot → res`):
 
-| snapshot | q  | r   | res | note                      |
-|----------|----|-----|-----|---------------------------|
-| 640      | 2  | 128 | 2   | tie, q even → stays       |
-| 896      | 3  | 128 | 4   | tie, q odd → rounds up    |
-| −384     | −2 | 128 | −2  | tie, q even → stays       |
+| snapshot | result | note                      |
+|----------|--------|---------------------------|
+| 640      | 2      | tie, q even → stays       |
+| 896      | 4      | tie, q odd → rounds up    |
+| −384     | −2     | tie, q even → stays       |
 
 ## 5. Overflow flag
 
@@ -91,6 +88,9 @@ Worked examples (`snapshot → res`):
   `[−32768, 32767]`). The flag update lands in the same cycle as the
   corresponding `res_valid`.
 - **Cleared** only by `clr` (or `rst`).
+- **Same-cycle priority:** if a saturating readout coincides with `clr` in
+  the same cycle, the set wins — `ovf` is 1 in the following cycle. `clr`
+  clears the flag only when no saturating readout lands that same cycle.
 - A readout that does not saturate leaves `ovf` unchanged. `res` always
   carries the clamped value; saturation is signaled only via `ovf`.
 
