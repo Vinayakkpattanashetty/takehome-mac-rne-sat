@@ -63,7 +63,6 @@ snapshot. A `clr` asserted in the same cycle as `rd` clears the accumulator
 - `q` if `r < 128`;
 - `q + 1` if `r > 128`;
 - on a tie (`r == 128`): `q` if `q` is even, else `q + 1`.
-**Implementation Hint for Math/Rounding:** Because the accumulator uses two's-complement representation, do not use the `/` operator, which truncates towards zero in Verilog and will fail for negative numbers. Instead, use bit-slicing: `q = acc[27:8]` perfectly achieves mathematical `floor(snapshot / 256)` for both positive and negative numbers, and `r = acc[7:0]` perfectly isolates the positive remainder.
 
 **Saturation — applied after rounding.** The rounded value is then clamped
 to the signed 16-bit range `[−32768, +32767]`. Note the order: rounding is
@@ -92,9 +91,6 @@ Worked examples (`snapshot → res`):
   `[−32768, 32767]`). The flag update lands in the same cycle as the
   corresponding `res_valid`.
 - **Cleared** only by `clr` (or `rst`).
-- **Same-cycle priority:** if a saturating readout coincides with `clr` in
-  the same cycle, the set wins — `ovf` is 1 in the following cycle. `clr`
-  clears the flag only when no saturating readout lands that same cycle.
 - A readout that does not saturate leaves `ovf` unchanged. `res` always
   carries the clamped value; saturation is signaled only via `ovf`.
 
