@@ -51,14 +51,11 @@ Asserting `rd` in cycle *t* requests a snapshot readout.
 
 **Snapshot value.** The snapshot is the accumulator value as it stood at
 the end of cycle *t−1* — that is, **before** any accumulator update
-(`en`/`clr`) occurring in cycle *t*. An `en` asserted in the same cycle as
-`rd` still updates the accumulator normally; it is simply not part of that
-snapshot. A `clr` asserted in the same cycle as `rd` clears the accumulator
-**after** the snapshot is taken (the readout returns the pre-clear value).
+(`en`/`clr`) occurring in cycle *t*.
 
 **Rounding — round-half-to-even at the 8 LSBs.** Let
 `q = floor(snapshot / 256)` and `r = snapshot − 256·q`, so that
-`0 ≤ r ≤ 255`. The rounded value is:
+`0 ≤ r ≤ 255` — including for negative snapshots. The rounded value is:
 
 - `q` if `r < 128`;
 - `q + 1` if `r > 128`;
@@ -81,6 +78,7 @@ Worked examples (`snapshot → res`):
 |----------|----|-----|-----|---------------------------|
 | 640      | 2  | 128 | 2   | tie, q even → stays       |
 | 896      | 3  | 128 | 4   | tie, q odd → rounds up    |
+| −384     | −2 | 128 | −2  | tie, q even → stays       |
 
 ## 5. Overflow flag
 
