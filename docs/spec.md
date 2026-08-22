@@ -51,7 +51,9 @@ Asserting `rd` in cycle *t* requests a snapshot readout.
 
 **Snapshot value.** The snapshot is the accumulator value as it stood at
 the end of cycle *t−1* — that is, **before** any accumulator update
-(`en`/`clr`) occurring in cycle *t*.
+(`en`/`clr`) occurring in cycle *t*. An `en` asserted in the same cycle as
+`rd` still updates the accumulator normally; it is simply not part of that
+snapshot.
 
 **Rounding — round-half-to-even at the 8 LSBs.** Let
 `q = floor(snapshot / 256)` and `r = snapshot − 256·q`, so that
